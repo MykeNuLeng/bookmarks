@@ -2,16 +2,12 @@ require 'sinatra'
 require './lib/list'
 class Bookmark < Sinatra::Base
 
-  before do
-    @list = List.instance
-  end
-
   get '/' do
     erb :index
   end
 
   get '/bookmarks' do
-    @list = List.create
+    @list = List.all
     erb :bookmarks
   end
 
