@@ -11,6 +11,8 @@
 # a separate helper file that requires the additional dependencies and performs
 # the additional setup, and require it from the spec files that actually need
 # it.
+ENV['ENVIRONMENT'] = 'test'
+
 require 'capybara/rspec'
 require 'simplecov'
 require 'simplecov-console'
@@ -24,16 +26,22 @@ SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new([
 SimpleCov.start
 
 require File.join(File.dirname(__FILE__), '..', 'app.rb')
-# require 'features/web_helpers.rb'
+require 'feature/web_helpers.rb'
 
 require 'capybara'
 require 'capybara/rspec'
 require 'rspec'
+require 'setup_test_database'
+require 'database_helpers'
 
 Capybara.app = Bookmark
 ENV['RACK_ENV'] = 'test'
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+
+  config.before :each do
+     setup_test_database
+  end
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.

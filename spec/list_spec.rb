@@ -1,11 +1,29 @@
 require 'list'
-
+require 'database_helpers'
 describe '.all' do
   it 'returns a list of bookmarks' do
-    bookmarks = List.all
+    connection = PG.connect(dbname: 'bookmark_manager_test')
 
-    expect(bookmarks).to include "http://www.makersacademy.com"
-    expect(bookmarks).to include "http://www.destroyallsoftware.com"
-    expect(bookmarks).to include "http://www.google.com"
+    connection.exec("INSERT INTO bookmarks (url, title) VALUES ('http://www.makersacademy.com', 'Makers Academy');")
+    connection.exec("INSERT INTO bookmarks (url, title) VALUES('http://www.destroyallsoftware.com', 'Destroy All Software');")
+    connection.exec("INSERT INTO bookmarks (url, title) VALUES('http://www.google.com', 'Google');")
+
+    bookmarks = List.all.map { |bookmark| bookmark.title }
+
+    expect(bookmarks).to include "Makers Academy"
+    expect(bookmarks).to include "Destroy All Software"
+    expect(bookmarks).to include "Google"
+  end
+end
+
+describe '.create' do
+  it 'creates a new bookmark' do
+    bookmark = List.create(url: 'http://www.testbookmark.com', title: 'Test Bookmark')
+    persisted_data = persisted_data(id: bookmark.id)
+
+    expect(bookmark).to be_a List
+    expect(bookmark.id).to eq persisted_data['id']
+    expect(bookmark.title).to eq 'Test Bookmark'
+    expect(bookmark.url).to eq 'http://www.testbookmark.com'
   end
 end
