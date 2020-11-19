@@ -36,4 +36,15 @@ describe '.delete' do
     bookmarks = List.all.map { |bookmark| bookmark.title }
     expect(bookmarks).not_to include 'Test Bookmark'
   end
+
+  describe '.update' do
+    it 'updates a bookmark' do
+      a = List.create(url: 'http://www.google.com', title: 'Google')
+      b = List.update(id: a.id ,url: 'www.testbookmark.com',title: 'Test Bookmark')
+      expect(b).to be_an_instance_of List
+      expect(b.id).to eq a.id
+      expect(b.url).to eq 'www.testbookmark.com'
+      expect(b.title).not_to eq a.title
+    end
+  end
 end

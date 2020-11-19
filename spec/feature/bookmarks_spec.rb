@@ -33,4 +33,16 @@ feature 'bookmarks list' do
     expect(page).not_to have_content "Oop"
     expect(page).to have_content "Google"
   end
+
+  scenario 'can edit your bookmarks' do
+    add_stuff_to_database
+    visit '/'
+    click_link "Bookmarks"
+    first('.bookmark').click_button('Edit')
+    fill_in "url", with: "www.pornhub.com"
+    fill_in "title", with: "chub hub"
+    click_button 'Confirm'
+    expect(page).to have_content "chub hub"
+    expect(page).not_to have_content "Makers Academy"
+  end
 end
