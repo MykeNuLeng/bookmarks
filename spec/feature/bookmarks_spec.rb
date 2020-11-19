@@ -17,4 +17,20 @@ feature 'bookmarks list' do
     click_button "add"
     expect(page).to have_content "Oop"
   end
+
+  scenario 'can delete stuff as well' do
+    add_stuff_to_database
+    visit '/'
+    click_link "Bookmarks"
+    fill_in "add_bookmark", with: "http://oop"
+    fill_in "Title", with: "Oop"
+    click_button "add"
+    fill_in "add_bookmark", with: "http://google.com"
+    fill_in "Title", with: "Google"
+    click_button "add"
+    fill_in 'delete_bookmark', with: 'Oop'
+    click_button 'Yeet'
+    expect(page).not_to have_content "Oop"
+    expect(page).to have_content "Google"
+  end
 end

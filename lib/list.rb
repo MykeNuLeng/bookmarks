@@ -18,8 +18,9 @@ class List
   result = connection.exec("SELECT * FROM bookmarks")
   result.map do |bookmark|
     List.new(id: bookmark['id'], title: bookmark['title'], url: bookmark['url'])
-  end
-end
+    end
+  end 
+
   def self.create(url: ,title:)
     if ENV['ENVIRONMENT'] != 'test'
       connection = PG.connect(dbname: 'bookmark_manager')
@@ -28,5 +29,14 @@ end
     end
     result = connection.exec("INSERT INTO bookmarks (url, title) VALUES('#{url}', '#{title}') RETURNING id, title, url;")
     List.new(id: result[0]['id'], title: result[0]['title'], url: result[0]['url'])
+  end
+
+  def self.delete(title:)
+    if ENV['ENVIRONMENT'] != 'test'
+      connection = PG.connect(dbname: 'bookmark_manager')
+    else
+      connection = PG.connect(dbname: 'bookmark_manager_test')
+    end
+    connection.exec("DELETE FROM bookmarks WHERE title = '#{title}'")
   end
 end

@@ -27,3 +27,13 @@ describe '.create' do
     expect(bookmark.url).to eq 'http://www.testbookmark.com'
   end
 end
+
+describe '.delete' do
+  it 'deletes a bookmark' do
+    List.create(url: 'http://www.google.com', title: 'Google')
+    List.create(url: 'http://www.testbookmark.com', title: 'Test Bookmark')
+    List.delete(title: 'Test Bookmark')
+    bookmarks = List.all.map { |bookmark| bookmark.title }
+    expect(bookmarks).not_to include 'Test Bookmark'
+  end
+end
